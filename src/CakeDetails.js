@@ -1,4 +1,44 @@
+import { useParams} from "react-router-dom"
+import axios from "axios"
+import {useState, useEffect} from "react"
+
 function CakeDetails() {
+	let params = useParams()
+	
+	
+	let [cakeData, setCakeDetails] = useState([]);
+	let urlCakeDetails = 'https://apifromashu.herokuapp.com/api/cake/'+params.cakeid
+	useEffect(() => {
+		axios({
+			method:'get',
+			url : urlCakeDetails,
+		}).then( (response) => {
+			setCakeDetails(response.data.data); 
+			
+		}, (error) => {
+			console.log("error in all cake api call", error);
+		})
+	}, [setCakeDetails])
+
+	let addToCart = (event) => {
+		console.log('on click',);
+		event.preventDefault();
+		let apiUrl = 'https://apifromashu.herokuapp.com/api/addcaketocart';
+		axios({
+			url : apiUrl,
+			headers : {
+				authtoken: localStorage.token
+			},
+			method : 'post',
+			data : { 'cakeid' : cakeData.cakeid, 'name' : cakeData.name, 'image' :  cakeData.image, 'price' :  cakeData.price, 'weight' : cakeData.weight} 
+		}).then((response) => {
+			console.log(response.data);
+			alert('Cake added to cart successfully');
+		}, (error) => {
+			console.log("in err", );
+		})
+	}
+
 	return(
 		<div className="container  mt-5">
 			<div className="card">
@@ -7,40 +47,29 @@ function CakeDetails() {
 						<div className="preview col-md-6">
 							<div className="preview-pic tab-content">
 								<div className="tab-pane active" id="pic-1">
-									<img src="http://placekitten.com/400/252" />
+									<img src={cakeData.image}  style={{height: '500px', width:'500px'}}/>
 								</div>
 							</div>
 							<ul className="preview-thumbnail nav nav-tabs">
 							</ul>
 						</div>
 						<div className="details col-md-6 ">
-							<h3 className="product-title ms-2">men's shoes fashion</h3>
+							<h3 className="product-title ms-2">{cakeData.name}</h3>
 							<div className="rating">
 								<div className="stars">
-									<span className="fa fa-star checked"></span>
-									<span className="fa fa-star checked"></span>
-									<span className="fa fa-star checked"></span>
-									<span className="fa fa-star"></span>
-									<span className="fa fa-star"></span>
+									{cakeData.ratings} ratings
 								</div>
-								<span className="review-no">41 reviews</span>
+								<span className="review-no">{cakeData.reviews} reviews</span>
 							</div>
-							<p className="product-description">Suspendisse quos? Tempus cras iure temporibus? Eu laudantium cubilia sem sem! Repudiandae et! Massa senectus enim minim sociosqu delectus posuere.</p>
-							<h4 className="price">current price: <span>$180</span></h4>
-							<p className="vote"><strong>91%</strong> of buyers enjoyed this product! <strong>(87 votes)</strong></p>
-							<h5 className="sizes">sizes:
-								<span className="size" data-toggle="tooltip" title="small">s</span>
-								<span className="size" data-toggle="tooltip" title="medium">m</span>
-								<span className="size" data-toggle="tooltip" title="large">l</span>
-								<span className="size" data-toggle="tooltip" title="xtra large">xl</span>
+							<p className="product-description">{cakeData.description}</p>
+							<h4 className="price"> Price: <span>{cakeData.price}</span></h4>
+							
+							<h5 className="sizes">Weight:
+								<span className="size" data-toggle="tooltip" title="small">{cakeData.weight}kg</span>
 							</h5>
-							<h5 className="colors">colors:
-								<span className="color orange not-available" data-toggle="tooltip" title="Not In store"></span>
-								<span className="color green"></span>
-								<span className="color blue"></span>
-							</h5>
+							
 							<div className="action">
-								<button className="add-to-cart btn btn-warning " type="button">Add to Cart</button>
+								<button className="add-to-cart btn btn-warning" type="button" onClick={addToCart}>Add to Cart</button>
 							</div>
 						</div>
 					</div>

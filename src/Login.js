@@ -1,8 +1,10 @@
 import {useState, useEffect} from "react"
 import axios from "axios"
+import { Link, withRouter } from 'react-router-dom';
+import { connect} from "react-redux"
 
 function Login(props) {
-
+	console.log(props);
 	var [errorMessage, setError] = useState('')
 	var [user, setUser] 		 = useState({});
 
@@ -32,7 +34,7 @@ function Login(props) {
 	let login = (event) => {
 
 		let apiUrl = 'https://apifromashu.herokuapp.com/api/login';
-		console.log("User is trying to login", user);
+		//console.log("User is trying to login", user);
 
 		if(!user.email || !user.password) {
 			setError("Please fill all details")
@@ -46,8 +48,18 @@ function Login(props) {
 				if(response.data.message === "Invalid Credentials") {
 					setError(response.data.message)
 				} else {
-					props.informlogin(response.data.name)
+					//props.informlogin(response.data.name)
 					setError("Successfully Login")
+					if(response.data.token) {
+						localStorage.token = response.data.token
+						localStorage.email = response.data.email
+						props.dispatch({
+							type: "LOGIN",
+							payload:response.data
+						})
+						props.history.push('/')
+					}
+
 				}
 			}, (error) => {
 				console.log("in err", error.data.message);
@@ -76,6 +88,12 @@ function Login(props) {
 				<div className="" style={{ color:'red', margin:"5px", padding: "5px"  }}>
 					{errorMessage}
 				</div>
+				<div style={{ float:"right"}}>
+					<Link to="/forgot">Forgot Password? </Link>
+				</div>
+				<div>
+					<Link to="/signup">New User? Click Here</Link>
+				</div>
 				<button onClick={login} className="btn btn-primary">Login</button>
 			</div>
 
@@ -84,4 +102,8 @@ function Login(props) {
 	)
 }
 
-export default Login
+
+
+Login = withRouter(Login)
+export default connect()(Login)
+/*above lined added props to login component known as dispatch*/

@@ -1,7 +1,7 @@
 import Carousel from './Carousel'
 import Cake from './Cake'
 // import cakes from './data.js'
-import CakeDetails from './CakeDetails'
+
 import axios from "axios"
 import {useState, useEffect} from "react"
 
@@ -27,11 +27,11 @@ function Home() {
 		}).then( (response) => {
 			console.log("all cakes", response.data.data);
 			setCakes(response.data.data); 
-			// return
+			
 		}, (error) => {
 			console.log("error in all cake api call", error);
 		})
-	})
+	}, [setCakes])
 	return (
 		<div>
 			<Carousel></Carousel>
@@ -40,8 +40,7 @@ function Home() {
 				{cakes?.length > 0 && cakes.map((each, index) =>  {
 					return (<Cake data={each} key={index} />)
 				})}
-			</div>
-			<CakeDetails></CakeDetails>
+			</div>		
 		</div>	
 	)
 }

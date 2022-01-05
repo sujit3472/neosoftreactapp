@@ -1,22 +1,22 @@
 import axios from "axios"
 import {useState, useEffect} from "react"
 import Cake from './Cake'
-
-function Search() {
-	let searchApiCall = "https://apifromashu.herokuapp.com/api/searchcakes?q="+"red"
+import queryString from 'query-string'
+function Search(props) {
+	
+	const parsed 	 = queryString.parse(props.location.search)
+	let searchApiCall = "https://apifromashu.herokuapp.com/api/searchcakes?q="+parsed.q
 	let[cakeresult, setCakeResult] = useState([])
 	useEffect(() => {
 		axios({
 			method:'get',
 			url : searchApiCall,
 		}).then( (response) => {
-			// console.log("in search", response.data.data);
-			// console.log("all cakes", response.data.data);
 			setCakeResult(response.data.data)
 		}, (error) => {
 			console.log("error in search api call", error);
 		})
-	})
+	}, [props.location.search])
 	return(
 		<div className="container">
 			<div className="row mt-2">
