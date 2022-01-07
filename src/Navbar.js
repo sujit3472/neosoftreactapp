@@ -45,8 +45,8 @@ function Navbar(props) {
 				        <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search" onChange={getSearch}/>
 				        <Link to={'/search?q='+ searchText}><button className="btn btn-outline-success">Search</button></Link>
 			        	{!props.loginStatus && <Link to="/login"><button className="btn btn-info ms-2">Login</button></Link>}
-			        	{props.loginStatus &&<Link to="/cart" className="ms-3">Cart</Link>}
-			        	{props.loginStatus &&<button className="btn btn-warning ms-2" onClick={userLogout}>Logout</button>}
+			        	{props.loginStatus && <Link to="/cart" className="ms-3"><i className="fas fa-shopping-cart"></i>Cart</Link>}
+			        	{props.loginStatus && <button className="btn btn-warning ms-2" onClick={userLogout}>Logout</button>}
 			      	</form>
 			    </div>
 		  	</div>
@@ -56,7 +56,7 @@ function Navbar(props) {
 //mapstatetoprops
 
 export default connect(function(state, props) {
-	console.log("...............initial state", state);
+	// console.log("...............initial state", state);
 	return {
 		user: state && state?.user?.name,
 		loginStatus : state && state?.isloggedin,

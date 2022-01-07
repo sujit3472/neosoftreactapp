@@ -2,16 +2,16 @@ var demo = function(state, action) {
 
 	switch(action.type) {
 		case "LOGIN" : {
-			console.log('in login');
+			
 			state ={...state}
 			state["isloggedin"] = true
 			state["user"] = action.payload
-			console.log(state);
+			
 			return state;
 		}
 
 		case "LOGOUT" : {
-			console.log('in logout reduceras');
+			
 			state = {...state}
 			localStorage.clear();
 			/*state["isloggedin"] = false
@@ -25,7 +25,14 @@ var demo = function(state, action) {
 		 	state = {...state}
 		 	state["isloggedin"] = true
 		 	state["user"] = action.payload
-		 	console.log("in check login", state);
+		 	
+		 	return state;
+		}
+
+		case "ADDTOCART" : {
+			state = {...state}
+		 	state["cart"] = action.payload
+		 	console.log("----in state", state);
 		 	return state;
 		}
 		default : return state 

@@ -10,6 +10,7 @@ import {BrowserRouter as Router, Route, Redirect, Link, Switch } from 'react-rou
 import PageNotFound from './PageNotFound';
 import CakeDetails from './CakeDetails'
 import Cart from './Cart'
+import Checkout from './Checkout'
 import axios from "axios"
 import { connect} from "react-redux"
 
@@ -28,7 +29,6 @@ function App(props) {
                 authtoken :token
             }
         }).then((response) => {
-            console.log("response from user details", response);
             props.dispatch({
                 type: "CheckUserLOGIN",
                 payload:response.data.data
@@ -46,6 +46,7 @@ function App(props) {
         setLoginStatus(true)
         //alert("Login compnent calling parent component")
     }*/
+    
     return (
         <div className="">
             <Router>
@@ -57,7 +58,8 @@ function App(props) {
                     <Route path="/signup" exact component={Signup} />
                     <Route path="/search" exact component={Search} />
                     <Route path="/cake/:cakeid" exact component={CakeDetails} />
-                    <Route path="/cart/" exact component={Cart} />
+                    {props.user && <Route path="/cart/" exact component={Cart} />}
+                    {props.user && <Route path="/checkout/" component={Checkout} />}
                 
                     <Route path="/*">
                         <Redirect to="/"> </Redirect>

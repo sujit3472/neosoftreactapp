@@ -1,8 +1,9 @@
 import { useParams} from "react-router-dom"
 import axios from "axios"
 import {useState, useEffect} from "react"
+import { connect} from "react-redux"
 
-function CakeDetails() {
+function CakeDetails(props) {
 	let params = useParams()
 	
 	
@@ -21,22 +22,35 @@ function CakeDetails() {
 	}, [setCakeDetails])
 
 	let addToCart = (event) => {
-		console.log('on click',);
+		
 		event.preventDefault();
-		let apiUrl = 'https://apifromashu.herokuapp.com/api/addcaketocart';
-		axios({
-			url : apiUrl,
-			headers : {
-				authtoken: localStorage.token
-			},
-			method : 'post',
-			data : { 'cakeid' : cakeData.cakeid, 'name' : cakeData.name, 'image' :  cakeData.image, 'price' :  cakeData.price, 'weight' : cakeData.weight} 
-		}).then((response) => {
-			console.log(response.data);
-			alert('Cake added to cart successfully');
-		}, (error) => {
-			console.log("in err", );
-		})
+		
+		if(localStorage.token && props.user) {
+			let apiUrl = 'https://apifromashu.herokuapp.com/api/addcaketocart';
+			axios({
+				url : apiUrl,
+				headers : {
+					authtoken: localStorage.token
+				},
+				method : 'post',
+				data : { 'cakeid' : cakeData.cakeid, 'name' : cakeData.name, 'image' :  cakeData.image, 'price' :  cakeData.price, 'weight' : cakeData.weight} 
+			}).then((response) => {
+				console.log(response.data);
+				if(response.data === 'Session Expired')
+					alert(response.data)
+				else {
+					alert('Cake added to cart successfully');
+					props.dispatch({
+						type: "ADDTOCART",
+						payload:response.data.data
+					})
+				}
+			}, (error) => {
+				console.log("in err", );
+			})
+		} else {
+			alert("You have not logged in please login")
+		}
 	}
 
 	return(
@@ -79,4 +93,10 @@ function CakeDetails() {
 	)
 }
 
-export default CakeDetails;
+
+export default connect(function (state, props){
+    return {
+        user:state?.user,
+        cart:state?.cart
+    }
+})(CakeDetails);

@@ -25,7 +25,7 @@ function Home() {
 			method:'get',
 			url : allcakeApi,
 		}).then( (response) => {
-			console.log("all cakes", response.data.data);
+		
 			setCakes(response.data.data); 
 			
 		}, (error) => {
